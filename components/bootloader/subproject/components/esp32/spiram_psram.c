@@ -32,10 +32,15 @@
 #include "soc/dport_reg.h"
 #include "soc/efuse_periph.h"
 #include "soc/spi_caps.h"
-#include "driver/gpio.h"
-#include "driver/spi_common_internal.h"
-#include "driver/periph_ctrl.h"
+#include "soc/io_mux_reg.h" // AM: added for bootloader
+#include "soc/gpio_periph.h" // AM: added for bootloader
+//#include "driver/gpio.h" // AM: removed from bootloader
+//#include "driver/spi_common_internal.h" // AM: removed from bootloader
+//#include "driver/periph_ctrl.h" // AM: removed from bootloader
 #include "bootloader_common.h"
+
+// AM: removed from bootloader
+#define CONFIG_SPIRAM_OCCUPY_NO_HOST
 
 #if CONFIG_ESP32_SPIRAM_SUPPORT
 #include "soc/rtc.h"

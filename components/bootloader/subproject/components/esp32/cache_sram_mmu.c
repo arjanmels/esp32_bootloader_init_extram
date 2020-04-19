@@ -16,7 +16,7 @@
 #include "soc/soc.h"
 #include "soc/dport_reg.h"
 #include "string.h"
-#include "esp_spi_flash.h"
+//#include "esp_spi_flash.h" // AM: remove for bootloader
 
 //Errors that can be returned
 #define MMU_SET_ADDR_ALIGNED_ERROR 1

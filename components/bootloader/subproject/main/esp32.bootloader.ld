@@ -164,6 +164,7 @@ SECTIONS
     *(.gnu.version)
     _text_end = ABSOLUTE(.);
     _etext = .;
-  } > iram_seg
+/* AM: changed so all function end up in IRAM for bootloader */
+  } > iram_loader_seg
 
 }

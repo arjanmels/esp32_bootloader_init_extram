@@ -50,6 +50,7 @@
 #include "bootloader_utility.h"
 #include "bootloader_sha.h"
 #include "esp_efuse.h"
+#include "esp32/spiram.h"
 
 static const char* TAG = "boot";
 
@@ -66,6 +67,9 @@ static void set_cache_and_start_app(uint32_t drom_addr,
     uint32_t irom_addr,
     uint32_t irom_load_addr,
     uint32_t irom_size,
+    uint32_t extram_addr,
+    uint32_t extram_load_addr,
+    uint32_t extram_size,
     uint32_t entry_addr);
 
 // Read ota_info partition and fill array from two otadata structures.
@@ -590,6 +594,9 @@ static void unpack_load_app(const esp_image_metadata_t* data)
     uint32_t irom_addr = 0;
     uint32_t irom_load_addr = 0;
     uint32_t irom_size = 0;
+    uint32_t extram_addr = 0;
+    uint32_t extram_load_addr = 0;
+    uint32_t extram_size = 0;
 
     // Find DROM & IROM addresses, to configure cache mappings
     for (int i = 0; i < data->image.segment_count; i++) {
@@ -614,6 +621,16 @@ static void unpack_load_app(const esp_image_metadata_t* data)
             irom_load_addr = header->load_addr;
             irom_size = header->data_len;
         }
+        if (header->load_addr >= SOC_EXTRAM_DATA_LOW && header->load_addr < SOC_EXTRAM_DATA_HIGH) {
+            if (extram_addr != 0) {
+                ESP_LOGE(TAG, MAP_ERR_MSG, "extram");
+            } else {
+                ESP_LOGD(TAG, "Mapping segment %d as %s", i, "extram");
+            }
+            extram_addr = data->segment_data[i];
+            extram_load_addr = header->load_addr;
+            extram_size = header->data_len;
+        }
     }
 
     ESP_LOGD(TAG, "calling set_cache_and_start_app");
@@ -623,6 +640,9 @@ static void unpack_load_app(const esp_image_metadata_t* data)
         irom_addr,
         irom_load_addr,
         irom_size,
+        extram_addr,
+        extram_load_addr,
+        extram_size,
         data->image.entry_addr);
 }
 
@@ -633,6 +653,9 @@ static void set_cache_and_start_app(
     uint32_t irom_addr,
     uint32_t irom_load_addr,
     uint32_t irom_size,
+    uint32_t extram_addr,
+    uint32_t extram_load_addr,
+    uint32_t extram_size,
     uint32_t entry_addr)
 {
     int rc;
@@ -682,6 +705,14 @@ static void set_cache_and_start_app(
     ESP_LOGD(TAG, "start: 0x%08x", entry_addr);
     typedef void (*entry_t)(void) __attribute__((noreturn));
     entry_t entry = ((entry_t) entry_addr);
+
+    // AM : enable PSRAM
+    esp_spiram_init_cache();
+    if (esp_spiram_init() != ESP_OK) {
+    }
+
+    // AM : copy data from flash to extram
+    bootloader_flash_read(extram_addr,(void*)extram_load_addr,extram_size,true);
 
     // TODO: we have used quite a bit of stack at this point.
     // use "movsp" instruction to reset stack back to where ROM stack starts.

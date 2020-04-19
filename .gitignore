@@ -1,0 +1,9 @@
+
+build/*
+!build/bootloader
+build/bootloader/*
+!build/bootloader/bootloader.bin
+!build/bootloader/bootloader.elf
+
+
+*.old

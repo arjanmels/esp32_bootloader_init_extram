@@ -119,6 +119,8 @@ static bool s_spiram_okay=true;
 
 void IRAM_ATTR call_start_cpu0()
 {
+
+
 #if CONFIG_FREERTOS_UNICORE
     RESET_REASON rst_reas[1];
 #else

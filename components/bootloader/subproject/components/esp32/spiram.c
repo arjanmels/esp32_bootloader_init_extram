@@ -27,10 +27,10 @@ we add more types of external RAM memory, this can be made into a more intellige
 #include "esp32/spiram.h"
 #include "spiram_psram.h"
 #include "esp_log.h"
-#include "freertos/FreeRTOS.h"
-#include "freertos/xtensa_api.h"
+//#include "freertos/FreeRTOS.h" // AM: removed from bootloader
+//#include "freertos/xtensa_api.h" // AM: removed from bootloader
 #include "soc/soc.h"
-#include "esp_heap_caps_init.h"
+//#include "esp_heap_caps_init.h" // AM: removed from bootloader
 #include "soc/soc_memory_layout.h"
 #include "soc/dport_reg.h"
 #include "esp32/himem.h"
@@ -173,6 +173,8 @@ esp_err_t esp_spiram_init()
     return ESP_OK;
 }
 
+// AM: Removed for use in bootloader
+#ifdef __DO_NOT_INCLUDE__
 
 esp_err_t esp_spiram_add_to_heapalloc()
 {
@@ -212,6 +214,7 @@ esp_err_t esp_spiram_reserve_dma_pool(size_t size) {
     }
     return ESP_OK;
 }
+#endif __DO_NOT_INCLUDE__
 
 size_t esp_spiram_get_size()
 {

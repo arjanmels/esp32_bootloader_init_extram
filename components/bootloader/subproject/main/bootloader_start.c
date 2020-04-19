@@ -25,6 +25,7 @@
 #include "sdkconfig.h"
 #include "esp_image_format.h"
 #include "esp32/rom/rtc.h"
+#include "esp32/spiram.h"
 
 static const char* TAG = "boot";
 
