@@ -662,6 +662,7 @@ static void set_cache_and_start_app(
     ESP_LOGD(TAG, "configure drom and irom and start");
     Cache_Read_Disable( 0 );
     Cache_Flush( 0 );
+    Cache_Flush( 1 );
 
     /* Clear the MMU entries that are already set up,
        so the new app only has the mappings it creates.
@@ -699,8 +700,7 @@ static void set_cache_and_start_app(
             DPORT_APP_CACHE_MASK_DRAM1 );
 
     Cache_Read_Enable( 0 );
-
-    // Application will need to do Cache_Flush(1) and Cache_Read_Enable(1)
+    Cache_Read_Enable( 1 );
 
     ESP_LOGD(TAG, "start: 0x%08x", entry_addr);
     typedef void (*entry_t)(void) __attribute__((noreturn));
