@@ -214,7 +214,7 @@ esp_err_t esp_spiram_reserve_dma_pool(size_t size) {
     }
     return ESP_OK;
 }
-#endif __DO_NOT_INCLUDE__
+#endif // __DO_NOT_INCLUDE__
 
 size_t esp_spiram_get_size()
 {
