@@ -148,7 +148,7 @@ esp_err_t esp_spiram_init()
     r = psram_enable(PSRAM_SPEED, PSRAM_MODE);
     if (r != ESP_OK) {
 #if CONFIG_SPIRAM_IGNORE_NOTFOUND
-        ESP_EARLY_LOGW(TAG, "SPI RAM enabled but initialization failed. Bailing out.");
+        ESP_EARLY_LOGI(TAG, "SPI RAM enabled but initialization failed. Bailing out.");
 #endif
         return r;
     }
